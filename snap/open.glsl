@@ -11,33 +11,25 @@ vec4 open_color(vec3 coords_geo, vec3 size_geo) {
     float num_layers = 10.0;
     float pixel_layer = floor(hash(floor(uv * size_geo.xy) + seed) * num_layers);
 
-    vec4 result = vec4(0.0);
+    float layer = pixel_layer;
+    float layer_delay = layer * 0.06;
+    float layer_p = clamp((rp - layer_delay) / (1.0 - layer_delay * 0.5), 0.0, 1.0);
+    float t = layer_p * layer_p;
+    float layer_alpha = 1.0 - smoothstep(0.3, 0.85, layer_p);
+
+    float lh = hash(vec2(layer + 0.5, seed));
     vec2 target = vec2(0.0, 0.0);
+    vec2 layer_target = target + vec2(-0.08 + lh * 0.16, -0.04 + lh * 0.08);
 
-    for (int i = 0; i < 10; i++) {
-        float layer = float(i);
-        float layer_delay = layer * 0.06;
-        float layer_p = clamp((rp - layer_delay) / (1.0 - layer_delay * 0.5), 0.0, 1.0);
+    float converge = t * 0.92;
+    vec2 sample_uv = (uv - layer_target * converge) / (1.0 - converge);
 
-        float t = layer_p * layer_p;
-
-        float layer_alpha = 1.0 - smoothstep(0.3, 0.85, layer_p);
-
-        float lh = hash(vec2(layer + 0.5, seed));
-        vec2 layer_target = target + vec2(-0.08 + lh * 0.16, -0.04 + lh * 0.08);
-
-        float converge = t * 0.92;
-        vec2 sample_uv = (uv - layer_target * converge) / (1.0 - converge);
-
-        vec3 tex_coords = niri_geo_to_tex * vec3(sample_uv, 1.0);
-        vec4 color = texture2D(niri_tex, tex_coords.st);
-
-        float belongs = step(abs(pixel_layer - layer), 0.5);
-        result += color * belongs * layer_alpha;
-    }
+    vec3 tex_coords = niri_geo_to_tex * vec3(sample_uv, 1.0);
+    vec4 result = texture2D(niri_tex, tex_coords.st) * layer_alpha;
 
     float initial_form = smoothstep(0.0, 0.05, rp);
     result.a *= mix(1.0, 0.0, initial_form);
+
     vec3 base_tex = niri_geo_to_tex * vec3(uv, 1.0);
     vec4 base_color = texture2D(niri_tex, base_tex.st);
     float base_alpha = 1.0 - smoothstep(0.0, 0.1, rp);

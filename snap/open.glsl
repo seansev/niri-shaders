@@ -12,7 +12,7 @@ vec4 open_color(vec3 coords_geo, vec3 size_geo) {
     float pixel_layer = floor(hash(floor(uv * size_geo.xy) + seed) * num_layers);
 
     vec4 result = vec4(0.0);
-    vec2 target = vec2(1.0, 0.0);
+    vec2 target = vec2(0.0, 0.0);
 
     for (int i = 0; i < 10; i++) {
         float layer = float(i);

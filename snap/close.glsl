@@ -11,10 +11,10 @@ vec4 close_color(vec3 coords_geo, vec3 size_geo) {
     float pixel_layer = floor(hash(floor(uv * size_geo.xy) + seed) * num_layers);
 
     float layer = pixel_layer;
-    float layer_delay = layer * 0.06;
+    float layer_delay = layer * 0.03;
     float layer_p = clamp((p - layer_delay) / (1.0 - layer_delay * 0.5), 0.0, 1.0);
     float t = layer_p * layer_p;
-    float layer_alpha = 1.0 - smoothstep(0.3, 0.85, layer_p);
+    float layer_alpha = 1.0 - smoothstep(0.2, 0.75, layer_p);
 
     float lh = hash(vec2(layer + 0.5, seed));
     vec2 target = vec2(1.0, 0.0);

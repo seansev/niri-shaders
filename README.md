@@ -9,4 +9,4 @@ You can replace the CODE GOES HERE part with the entire file content of the clos
 
 e.g. custom-shader r"CODE GOES HERE"
 
-Don't forget to set a duration (example in the link above), I use 1500 ms (1.5 seconds) in the demo.
+Don't forget to set a duration (example in the link above), you probably want between 400 to 800 ms.
